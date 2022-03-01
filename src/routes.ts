@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { calculateSwapAmountIn, calculateSwapAmountOut } from "./utils/amm/pool";
-import { calculateDestinationAmountBasedOnSourceAmountAmm, calculateSourceAmountBasedOnDestinationAmountAmm } from "./utils/swap-amm";
+import { calculateDestinationAmountBasedOnSourceAmountAmm, calculateDestinationDataAmm, calculateSourceAmountBasedOnDestinationAmountAmm, calculateSourceDataAmm } from "./utils/swap-amm";
 
 const routes = Router();
 
@@ -27,17 +27,18 @@ routes.post('/swapAmountOut', (req, res) => {
     });
 });
 
-routes.post('/calDestinationAmountBasedOnSourceAmount', (req, res) => {
-    let destinationAmount = calculateDestinationAmountBasedOnSourceAmountAmm(req.body);
-    console.log(`----> Source Amount: ${destinationAmount}`);
-    return res.json(destinationAmount);
+routes.post('/calculateDestinationData', (req, res) => {
+    let destinationData = calculateDestinationDataAmm(req.body);
+    console.log(`Calculate Destination Data: amount=${req.body.sourceAmount}, from source=${req.body.sourceCoin} to destination=${req.body.destinationCoin}`);
+    console.log(`----> Destination Data: ${JSON.stringify(destinationData)}`);
+    return res.json(destinationData);
 });
 
-routes.post('/calSourceAmountBasedOnDestinationAmount', (req, res) => {
-    let sourceAmount = calculateSourceAmountBasedOnDestinationAmountAmm(req.body);
-    console.log(`Calculate Source Amount Based on Destination Amount: ${req.body.sourceAmount} from ${req.body.sourceCoin}` );
-    console.log(`----> Source Amount: ${sourceAmount}`);
-    return res.json(sourceAmount);
+routes.post('/calculateSourceData', (req, res) => {
+    let sourceData = calculateSourceDataAmm(req.body);
+    console.log(`Calculate Source Data, amount=${req.body.destinationAmount}, from destination=${req.body.destinationCoin} to source=${req.body.sourceCoin}`);
+    console.log(`----> Source Data: ${JSON.stringify(sourceData)}`);
+    return res.json(sourceData);
 });
 
 
