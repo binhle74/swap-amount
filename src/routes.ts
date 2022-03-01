@@ -27,7 +27,7 @@ routes.post('/swapAmountOut', (req, res) => {
     });
 });
 
-routes.post('/calDestAmountBasedOnSourceAmount', (req, res) => {
+routes.post('/calDestinationAmountBasedOnSourceAmount', (req, res) => {
     let destinationAmount = calculateDestinationAmountBasedOnSourceAmountAmm(req.body);
     console.log(`----> Source Amount: ${destinationAmount}`);
     return res.json(destinationAmount);
