@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { calculateSwapAmountIn, calculateSwapAmountOut } from "./utils/amm/pool";
-import { calculateDestinationAmountBasedOnSourceAmountAmm, calculateDestinationDataAmm, calculateSourceAmountBasedOnDestinationAmountAmm, calculateSourceDataAmm } from "./utils/swap-amm";
+import { calculateDestinationDataAmm, calculateSourceDataAmm } from "./utils/swap-amm";
 
 const routes = Router();
 
