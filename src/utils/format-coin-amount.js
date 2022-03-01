@@ -1,20 +1,14 @@
-import React from "react";
-import {
-  RText,
-} from "components/base";
 import formatCurrency from "../lib/number_ext";
+import SWAP_AMOUNT_ENV from '../swap-amount.env';
 
 const formatCoinAmount = (input, coin, options = {}) => {
-  const { COIN_CURRENCY_CONFIG } = window;
+  const { COIN_CURRENCY_CONFIG } = SWAP_AMOUNT_ENV;
   const {
-    unitFormat = "none",
     showEmptyString = false,
     showDash = false,
     maxPrecision = null,
     stripInsignificantZeros = false,
-    precision = null,
-    currencyColor,
-    amountColor,
+    precision = null
   } = options;
   let copiedInput = input;
   if (typeof copiedInput === "string") {
@@ -47,27 +41,7 @@ const formatCoinAmount = (input, coin, options = {}) => {
     { strip: stripInsignificantZeros },
   );
 
-  // return formattedBareInput;
-  switch (unitFormat) {
-    case "symbol": return `${symbol}${formattedBareInput}`;
-    case "unit": return `${formattedBareInput} ${coin.toUpperCase()}`;
-    case "unitAdvanced": return (
-      <RText>
-        <RText bold>{`${formattedBareInput} `}</RText>
-        <RText>{coin.toUpperCase()}</RText>
-      </RText>
-    );
-    case "full": return (
-      <RText>
-        <RText {...{ color: amountColor }} testID="amount">{`${formattedBareInput}`}</RText>
-        {" "}
-        <RText {...{ color: currencyColor }} testID="currency">
-          {coin.toUpperCase()}
-        </RText>
-      </RText>
-    );
-    default: return formattedBareInput;
-  }
+  return formattedBareInput;
 };
 
 export default formatCoinAmount;

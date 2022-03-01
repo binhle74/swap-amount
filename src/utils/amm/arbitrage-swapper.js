@@ -1,4 +1,4 @@
-import { reportError } from "utils/error-reporter";
+import { reportError } from "../error-reporter";
 import { calculateSwapAmountOut, calculateSwapAmountIn } from "./pool";
 
 function trySwapOnRoute({ poolStates, swapRoute, amountIn }) {

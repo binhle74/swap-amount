@@ -1,6 +1,7 @@
 import {
   divide, floor, ceil, lowerCase,
-} from "lodash-es";
+} from "lodash";
+
 import {
   maxSourcePrecision,
   maxDestinationPrecision,

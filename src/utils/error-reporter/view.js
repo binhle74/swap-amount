@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
   View,
 } from "react-native";
-import { isArray } from "lodash-es";
+import { isArray } from "lodash";
 import { back } from "redux-first-router";
 import { StyleSheet } from "utils/react-native";
 import { translate } from "utils/with-translation";

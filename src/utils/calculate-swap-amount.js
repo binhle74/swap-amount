@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash-es";
+import { isEmpty } from "lodash";
 import formatCoinAmount from "./format-coin-amount";
 import { parseFloatAmount } from "./parse-amount";
 import {
@@ -7,18 +7,16 @@ import {
   multiply,
   divide,
   withPrecision,
-} from "lib/number_ext";
-import {
-  calculateBidCounterAmount,
-  calculateAskCounterAmount,
-  calculateBidBaseAmount,
-  calculateAskBaseAmount,
-} from "utils/price-ladders";
-import { reportError } from "utils/error-reporter";
+} from "../lib/number_ext";
 
-const fiatCurrencies = window.REACT_RAILS_ENV.fiat_wallet_currencies;
+import { reportError } from "./error-reporter";
+import { calculateAskCounterAmount, calculateBidCounterAmount } from "./price-ladders/calculate-counter-amount";
+import { calculateAskBaseAmount, calculateBidBaseAmount } from "./price-ladders/calculate-base-amount";
+import { SWAP_AMOUNT_ENV } from "../swap-amount.env";
 
-const getSwapFee = () => divide(parseFloatAmount(REACT_RAILS_ENV.swap_fee), 100);
+const fiatCurrencies = SWAP_AMOUNT_ENV.fiat_wallet_currencies;
+
+const getSwapFee = () => divide(parseFloatAmount(SWAP_AMOUNT_ENV.swap_fee), 100);
 
 export const SOURCE_AMOUNT_ADJUSTMENT_RATE = add(1, getSwapFee());
 export const DESTINATION_AMOUNT_ADJUSTMENT_RATE = subtract(1, getSwapFee());
@@ -165,7 +163,7 @@ const calculateSwapAmount = ({
   let counterAmount;
   let calculatedAmount;
 
-  if (REACT_RAILS_ENV.investment_valuator_enabled) {
+  if (SWAP_AMOUNT_ENV.investment_valuator_enabled) {
     const steps = [];
     counterAmount = calculateSwapAmountWithPriceLadders({
       fromCoin, toCoin, fromAmount, accumulatedPriceLadders, base, usedPriceLadders, steps,

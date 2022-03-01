@@ -1,4 +1,4 @@
-import { pickBy, uniq, clone } from "lodash-es";
+import { pickBy, uniq, clone } from "lodash";
 
 const MAX_SWAP_ROUTE_LENGTH = 3;
 

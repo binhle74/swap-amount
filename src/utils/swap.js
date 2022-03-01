@@ -6,10 +6,12 @@ import calculateSwapAmount, {
   SOURCE_AMOUNT_ADJUSTMENT_RATE,
   DESTINATION_AMOUNT_ADJUSTMENT_RATE,
 } from "./calculate-swap-amount";
+import { SWAP_AMOUNT_ENV } from "../swap-amount.env";
+
 
 const {
   precision_digits: precisionDigits,
-} = window.COIN_CURRENCY_CONFIG;
+} = SWAP_AMOUNT_ENV.COIN_CURRENCY_CONFIG;
 
 const getFilter = ({
   sourceCoin,
@@ -17,7 +19,7 @@ const getFilter = ({
   isReverse = false,
 }) => {
   const pair = isReverse ? `${destinationCoin}${sourceCoin}` : `${sourceCoin}${destinationCoin}`;
-  const filters = REACT_RAILS_ENV.liquidity_filters;
+  const filters = SWAP_AMOUNT_ENV.liquidity_filters;
   const filter = filters[pair];
 
   if (!filter && !isReverse) {
@@ -115,12 +117,12 @@ const calculateDestinationAmountBasedOnSourceAmount = ({
 const getDestinationCoinsToMarketSwap = (sourceCoin) => {
   const {
     p2p_coins: p2pCoins,
-  } = window.COIN_CURRENCY_CONFIG;
+  } = SWAP_AMOUNT_ENV.COIN_CURRENCY_CONFIG;
 
   const {
     major_coins: majorCoins,
     altcoin_currencies: minorCoins,
-  } = window.REACT_RAILS_ENV;
+  } = SWAP_AMOUNT_ENV;
   // TODO: support swap from bnb -> bch, ltc, xrp & vice versa
   // then remove this
   const pendingSupportedP2pCoins = ["bnb"];
@@ -149,7 +151,7 @@ const getDestinationCoinsToMarketSwap = (sourceCoin) => {
 const getDestinationCoinsToLimitSwap = (sourceCoin) => {
   const {
     liquidable_pairs: liquidablePairs,
-  } = window.REACT_RAILS_ENV;
+  } = SWAP_AMOUNT_ENV.SWAP_AMOUNT_ENV;
   // liquidity-info configs with uppercase as coin symbol
   // so we need to upcase the source coin before comparing
   const upperCaseSourceCoin = sourceCoin.toUpperCase();
@@ -203,7 +205,7 @@ const calculateDestinationAmountBasedOnSourceAmountWithLimitOrderSwap = ({
   isNumber = false,
 }) => {
   if (sourceAmount !== "" && sourceAmount != null) {
-    const destinationCoinPrecision = window.COIN_CURRENCY_CONFIG.precision_digits[destinationCoin];
+    const destinationCoinPrecision = SWAP_AMOUNT_ENV.COIN_CURRENCY_CONFIG.precision_digits[destinationCoin];
     return calculateLimitOrderSwapAmount({
       toCoin: destinationCoin,
       fromAmount: sourceAmount,
@@ -242,8 +244,8 @@ const calculateSourceAmountBasedOnDestinationAmountWithLimitOrderSwap = ({
 const getCoinRatePrecision = ({ sourceCoin, destinationCoin }) => {
   const {
     coefficient: coinCoefficient,
-  } = window.COIN_CURRENCY_CONFIG;
-  const fiatCurrencies = window.REACT_RAILS_ENV.fiat_wallet_currencies;
+  } = SWAP_AMOUNT_ENV.COIN_CURRENCY_CONFIG;
+  const fiatCurrencies = SWAP_AMOUNT_ENV.fiat_wallet_currencies;
 
   if (fiatCurrencies.includes(destinationCoin)) return precisionDigits[destinationCoin];
 

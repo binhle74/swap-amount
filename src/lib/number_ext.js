@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { SWAP_AMOUNT_ENV } from "../swap-amount.env";
 
 /*
 ===== IMPORTANT NOTICE =====
@@ -130,7 +131,7 @@ Number.prototype.coinFormatter = function (currencyOrCountry, options) { // esli
   };
   options = Object.assign({}, defaults, options);
 
-  let currency = (currencyOrCountry != null ? currencyOrCountry.length : undefined) === 2 ? window.REACT_RAILS_ENV.country_currencies[currencyOrCountry] : currencyOrCountry;
+  let currency = (currencyOrCountry != null ? currencyOrCountry.length : undefined) === 2 ? SWAP_AMOUNT_ENV.country_currencies[currencyOrCountry] : currencyOrCountry;
 
   currency = currency != null ? currency.toUpperCase() : undefined;
   if (!currency) {
@@ -138,24 +139,24 @@ Number.prototype.coinFormatter = function (currencyOrCountry, options) { // esli
   }
 
   const input = this;
-  if (window.COIN_CURRENCY_CONFIG.coin_currencies.indexOf(currency.toLowerCase()) !== -1) {
-    precision = window.COIN_CURRENCY_CONFIG.precision_digits[currency.toLowerCase()];
+  if (SWAP_AMOUNT_ENV.COIN_CURRENCY_CONFIG.coin_currencies.indexOf(currency.toLowerCase()) !== -1) {
+    precision = SWAP_AMOUNT_ENV.COIN_CURRENCY_CONFIG.precision_digits[currency.toLowerCase()];
   } else if (currency === "VND") {
     precision = 0;
-  } else if (window.CURRENCY_PRECISION[currency]) {
-    precision = window.CURRENCY_PRECISION[currency];
+  } else if (SWAP_AMOUNT_ENV.CURRENCY_PRECISION[currency]) {
+    precision = SWAP_AMOUNT_ENV.CURRENCY_PRECISION[currency];
   } else {
-    precision = window.REACT_RAILS_ENV.remi_decimals;
+    precision = SWAP_AMOUNT_ENV.remi_decimals;
   }
   if (options.maxDefaultPrecision && precision > options.maxDefaultPrecision) {
     precision = options.maxDefaultPrecision;
   }
 
-  const currencySymbol = window.COIN_CURRENCY_CONFIG.symbols[currency?.toLowerCase()] || window.CURRENCY_FORMATS[currency?.toLowerCase()]?.symbol || "$";
+  const currencySymbol = SWAP_AMOUNT_ENV.COIN_CURRENCY_CONFIG.symbols[currency?.toLowerCase()] || SWAP_AMOUNT_ENV.CURRENCY_FORMATS[currency?.toLowerCase()]?.symbol || "$";
 
   const formattedBareInput = formatCurrency(input, precision, { strip: options.stripInsignificantZeros });
   if (options.unitFormat === "symbol") {
-    if (window.CURRENCY_FORMATS[currency] != null && window.CURRENCY_FORMATS[currency].symbol_first === false) {
+    if (SWAP_AMOUNT_ENV.CURRENCY_FORMATS[currency] != null && SWAP_AMOUNT_ENV.CURRENCY_FORMATS[currency].symbol_first === false) {
       return `${formattedBareInput}${currencySymbol}`;
     }
     return `${currencySymbol}${formattedBareInput}`;

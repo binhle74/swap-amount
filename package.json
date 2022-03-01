@@ -13,9 +13,10 @@
     "@uniswap/v3-periphery": "^1.4.0",
     "bignumber.js": "^9.0.2",
     "decimal.js": "^10.3.1",
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jsbi": "^4.1.0",
-    "lodash-es": "^4.17.21"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

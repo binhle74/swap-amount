@@ -1,5 +1,8 @@
 import express from "express";
 import routes from "./routes";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 class App {
     public server;
@@ -11,7 +14,8 @@ class App {
     }
 
     private middlewares() {
-        this.server.use(express.json());
+        this.server.use(express.json({ limit: '50mb'}));
+        this.server.use(express.urlencoded({extended: true, limit: '25mb'}));
     }
 
     private routes() {

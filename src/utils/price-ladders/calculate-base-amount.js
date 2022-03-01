@@ -1,4 +1,4 @@
-import { add, subtract, divide } from "lib/number_ext";
+import { add, subtract, divide } from "../../lib/number_ext";
 
 const calculateBaseAmount = (accumulatedInventory, counterAmount, force) => {
   const inventorySize = accumulatedInventory.length;

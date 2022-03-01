@@ -1,4 +1,4 @@
-import { trySwapOnRoute, trySwapInverselyOnRoute } from "utils/amm/arbitrage-swapper";
+import { trySwapOnRoute, trySwapInverselyOnRoute } from "../amm/arbitrage-swapper";
 
 function findBestSwapRoute({ poolStates, swapRoutes, amountIn }) {
   let maxAmountOut;
