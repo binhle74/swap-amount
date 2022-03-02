@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { calculateSwapAmountIn, calculateSwapAmountOut } from "./utils/amm/pool";
-import { calculateDestinationDataAmm, calculateSourceDataAmm } from "./utils/swap-amm";
+import { calculateSwapAmountOut } from "./utils/amm/pool";
 
 const routes = Router();
 
@@ -27,7 +26,7 @@ routes.post('/swapAmountOut', (req, res) => {
             amountOut: amountOut
         });
     }
-    console.log(`---> Respond ${amountOutList.length} 'amount out' item.` );
+    console.log(`---> Respond ${amountOutList.length} 'amount out' item(s).` );
     return res.json(amountOutList);
 });
 
