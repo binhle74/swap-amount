@@ -34,6 +34,26 @@ routes.post('/calculateDestinationData', (req, res) => {
     return res.json(destinationData);
 });
 
+routes.post('/calculateDestinationsData', (req, res) => {
+    let requestBody = req.body;
+    let sourceAmounts = req.body.sourceAmounts;
+
+    let destinationDataArguments: any = {
+        sourceCoin: requestBody.sourceCoin,
+        destinationCoin: requestBody.destinationAmount,
+        poolStates: requestBody.poolStates,
+        swapRoutes: requestBody.swapRoutes
+    };
+
+    let destinationDataList = [];
+    for (let sourceAmount of sourceAmounts) {
+        destinationDataArguments.sourceAmount = sourceAmount;
+        let destinationData = calculateDestinationDataAmm(destinationDataArguments);
+        destinationDataList.push(destinationData);
+    }
+    return res.json(destinationDataList);
+});
+
 routes.post('/calculateSourceData', (req, res) => {
     let sourceData = calculateSourceDataAmm(req.body);
     console.log(`Calculate Source Data, amount=${req.body.destinationAmount}, from destination=${req.body.destinationCoin} to source=${req.body.sourceCoin}`);
@@ -41,5 +61,23 @@ routes.post('/calculateSourceData', (req, res) => {
     return res.json(sourceData);
 });
 
+routes.post('/calculateSourcesData', (req, res) => {
+    let requestBody = req.body;
+    let destinationAmounts = req.body.destinationAmounts;
+    let sourceDataArguments: any = {
+        sourceCoin: requestBody.sourceCoin,
+        destinationCoin: requestBody.destinationAmount,
+        poolStates: requestBody.poolStates,
+        swapRoutes: requestBody.swapRoutes
+    };
+
+    let sourceDataList = [];
+    for (let destinationAmount of destinationAmounts) {
+        sourceDataArguments.destinationAmount = destinationAmount;
+        let sourceData = calculateSourceDataAmm(sourceDataArguments);
+        sourceDataList.push(sourceData);
+    }
+    return res.json(sourceDataList);
+});
 
 export default routes;
