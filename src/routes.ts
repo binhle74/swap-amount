@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { calculateSwapAmountOut } from "./utils/amm/pool";
+import recalculatePriceImpact from "./utils/calculate-price-impact";
 import { calculateDestinationDataAmm, calculateSourceDataAmm } from "./utils/swap-amm";
 
 const routes = Router();
@@ -11,7 +12,7 @@ routes.get('/', (req, res) => {
 
 routes.post('/swapAmountOut', (req, res) => {
     let requestBody = req.body;
-    console.log(`---> Swap amount request: ${JSON.stringify(requestBody)}.` );
+    console.log(`---> Swap amount request: ${JSON.stringify(requestBody)}.`);
     let amountInList = requestBody.amountInList;
     let amountOutArgs: any = {
         poolState: requestBody.poolState,
@@ -27,16 +28,23 @@ routes.post('/swapAmountOut', (req, res) => {
             amountOut: amountOut
         });
     }
-    console.log(`---> Respond ${amountOutList.length} 'amount out' item(s).` );
+    console.log(`---> Respond ${amountOutList.length} 'amount out' item(s).`);
     return res.json(amountOutList);
 });
 
 routes.post('/calculateDestinationsDataAmm', (req, res) => {
     let requestBody = req.body;
     let sourceAmounts = req.body.sourceAmounts;
-    console.log(`---> Calculate DESTINATION amount, source coin='${requestBody.sourceCoin}', destination coin='${requestBody.destinationCoin}'.` );
+    console.log(`---> Calculate DESTINATION amount, source coin='${requestBody.sourceCoin}', destination coin='${requestBody.destinationCoin}'.`);
 
     let destinationDataArguments: any = {
+        sourceCoin: requestBody.sourceCoin,
+        destinationCoin: requestBody.destinationCoin,
+        poolStates: requestBody.poolStates,
+        swapRoutes: requestBody.swapRoutes
+    };
+
+    let priceImpactArguments = {
         sourceCoin: requestBody.sourceCoin,
         destinationCoin: requestBody.destinationCoin,
         poolStates: requestBody.poolStates,
@@ -47,20 +55,33 @@ routes.post('/calculateDestinationsDataAmm', (req, res) => {
     for (let sourceAmount of sourceAmounts) {
         destinationDataArguments.sourceAmount = sourceAmount;
         let destinationData = calculateDestinationDataAmm(destinationDataArguments);
+        let priceImpact = recalculatePriceImpact({
+            ...priceImpactArguments,
+            newSourceAmount: sourceAmount,
+            newDestinationAmount: destinationData.rawDestinationAmountAmm
+        });
         destinationDataList.push({
             sourceAmount: sourceAmount,
-            destinationAmount: destinationData.rawDestinationAmountAmm
+            destinationAmount: destinationData.rawDestinationAmountAmm,
+            priceImpact: priceImpact
         });
     }
-    console.log(`---> Respond ${destinationDataList.length} 'destination amount' item(s).` );
+    console.log(`---> Respond ${destinationDataList.length} 'destination amount' item(s).`);
     return res.json(destinationDataList);
 });
 
 routes.post('/calculateSourcesDataAmm', (req, res) => {
     let requestBody = req.body;
     let destinationAmounts = req.body.destinationAmounts;
-    console.log(`---> Calculate SOURCE amount, destination coin='${requestBody.destinationCoin}', source coin='${requestBody.sourceCoin}'.` );
+    console.log(`---> Calculate SOURCE amount, destination coin='${requestBody.destinationCoin}', source coin='${requestBody.sourceCoin}'.`);
     let sourceDataArguments: any = {
+        sourceCoin: requestBody.sourceCoin,
+        destinationCoin: requestBody.destinationCoin,
+        poolStates: requestBody.poolStates,
+        swapRoutes: requestBody.swapRoutes
+    };
+
+    let priceImpactArguments = {
         sourceCoin: requestBody.sourceCoin,
         destinationCoin: requestBody.destinationCoin,
         poolStates: requestBody.poolStates,
@@ -71,12 +92,18 @@ routes.post('/calculateSourcesDataAmm', (req, res) => {
     for (let destinationAmount of destinationAmounts) {
         sourceDataArguments.destinationAmount = destinationAmount;
         let sourceData = calculateSourceDataAmm(sourceDataArguments);
+        let priceImpact = recalculatePriceImpact({
+            ...priceImpactArguments,
+            newSourceAmount: sourceData.rawSourceAmountAmm,
+            newDestinationAmount: destinationAmount
+        });
         sourceDataList.push({
             destinationAmount: destinationAmount,
-            sourceAmount: sourceData.rawSourceAmountAmm
+            sourceAmount: sourceData.rawSourceAmountAmm,
+            priceImpact: priceImpact
         });
     }
-    console.log(`---> Respond ${sourceDataList.length} 'source amount' item(s).` );
+    console.log(`---> Respond ${sourceDataList.length} 'source amount' item(s).`);
     return res.json(sourceDataList);
 });
 
